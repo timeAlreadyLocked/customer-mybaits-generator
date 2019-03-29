@@ -15,6 +15,8 @@
         <plugin type="com.itfsw.mybatis.generator.plugins.ModelBuilderPlugin"/>
         <!--<plugin type="com.GeneratorSwagger2Doc"/>-->
         <plugin type="cn.lpj.mybatis.generator.CustomerMybatisPlugin"/>
+        <!--覆盖xml文件-->
+        <plugin type="cn.lpj.mybatis.generator.OverwriteXmlPlugin"/>
         <!-- optional，旨在创建class时，对注释进行控制 -->
         <commentGenerator>
             <property name="suppressDate" value="false"/>
@@ -44,6 +46,9 @@
             <!-- 是否对类CHAR类型的列的数据进行trim操作 -->
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
+        <javaExampleGenerator targetPackage="${exampleTargetPackage}" targetProject="${exampleTargetProject}">
+            <property name="enableSubPackages" value="true"/>
+        </javaExampleGenerator>
 
         <!-- 生成映射文件的包名和位置-->
         <sqlMapGenerator targetPackage="${xmlTargetPackage}"
