@@ -320,11 +320,11 @@ public class CustomerMybatisPlugin extends PluginAdapter {
             if (flag) {
                 sb.append(" and ");
                 sb.append(item).append(".");
-                sb.append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
+                sb.append(introspectedColumn.getJavaProperty());
                 sb.append(" != null");
             } else {
                 sb.append(item).append(".");
-                sb.append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
+                sb.append(introspectedColumn.getJavaProperty());
                 sb.append(" != null");
                 flag = true;
             }
