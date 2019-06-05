@@ -67,7 +67,7 @@ public class CustomerMybatisPlugin extends PluginAdapter {
 //        method.addJavaDocLine(" * list of size not greater than 1000");
 //        method.addJavaDocLine(" */");
         method.setName("updateBySelectiveBatch");
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<" + objectName + ">"), "list"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<? extends" + objectName + ">"), "list"));
         method.setReturnType(new FullyQualifiedJavaType("void"));
 
 		/*该行代码的作用：当commentGenerator配置为false时，接口可以生成注释代码。
@@ -77,12 +77,12 @@ public class CustomerMybatisPlugin extends PluginAdapter {
         interfaze.addMethod(method);
         method = new Method();//
         method.setName("updateBatch");
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<" + objectName + ">"), "list"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<? extends" + objectName + ">"), "list"));
         method.setReturnType(new FullyQualifiedJavaType("void"));
         interfaze.addMethod(method);
         method = new Method();//
         method.setName("insertBatch");
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<" + objectName + ">"), "list"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<? extends" + objectName + ">"), "list"));
         method.setReturnType(new FullyQualifiedJavaType("void"));
         interfaze.addMethod(method);
         interfaze.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
