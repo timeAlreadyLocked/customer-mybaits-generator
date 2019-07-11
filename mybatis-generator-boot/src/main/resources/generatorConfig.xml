@@ -10,9 +10,16 @@
     <context id="default" targetRuntime="MyBatis3">
 
         <!-- 查询单条数据插件 -->
-        <plugin type="com.itfsw.mybatis.generator.plugins.SelectOneByExamplePlugin"/>
+        <plugin type="cn.lpj.mybatis.generator.SelectOneByExamplePlugin"/>
         <!-- 数据Model链式构建插件 -->
-        <plugin type="com.itfsw.mybatis.generator.plugins.ModelBuilderPlugin"/>
+        <plugin type="cn.lpj.mybatis.generator.ModelBuilderPlugin"/>
+<!--        <plugin type="cn.lpj.mybatis.generator.SelectiveEnhancedPlugin"/>-->
+        <plugin type="cn.lpj.mybatis.generator.ModelColumnPlugin"/>
+        <plugin type="cn.lpj.mybatis.generator.BatchInsertPlugin"/>
+        <plugin type="cn.lpj.mybatis.generator.ExampleEnhancedPlugin"/>
+        <plugin type="cn.lpj.mybatis.generator.ModelColumnPlugin">
+            <property name="" value=""/>
+        </plugin>
         <!--<plugin type="com.GeneratorSwagger2Doc"/>-->
         <plugin type="cn.lpj.mybatis.generator.CustomerMybatisPlugin"/>
         <!--覆盖xml文件-->
@@ -79,11 +86,11 @@
             <!--delimitedColumnName=""/>-->
 
         </table>
-        <table tableName="tb_content_category"></table>
-        <table tableName="tb_item"></table>
-        <table tableName="tb_item_cat"></table>
-        <table tableName="tb_item_desc"></table>
-        <table tableName="tb_item_param"></table>
+<!--        <table tableName="encrypt_key"></table>-->
+        <table tableName="env" domainObjectName="TEnv"></table>
+<!--        <table tableName="user"></table>-->
+<!--        <table tableName="tb_item_desc"></table>-->
+<!--        <table tableName="tb_item_param"></table>-->
     </context>
 
 </generatorConfiguration>

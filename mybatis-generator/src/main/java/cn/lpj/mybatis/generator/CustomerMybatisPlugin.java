@@ -59,7 +59,7 @@ public class CustomerMybatisPlugin extends PluginAdapter {
         FullyQualifiedJavaType modelTypeWithoutBLOBs = JavaElementGeneratorTools.getModelTypeWithoutBLOBs(introspectedTable);
         if (objectName == null)
             objectName = modelTypeWithoutBLOBs.getFullyQualifiedName();
-        interfaze.addImportedType(new FullyQualifiedJavaType("java.util.List"));
+        interfaze.addImportedType(new FullyQualifiedJavaType("java.util.Collection"));
 
         Method method = new Method();//
 //        method.addJavaDocLine("/**");
@@ -67,7 +67,7 @@ public class CustomerMybatisPlugin extends PluginAdapter {
 //        method.addJavaDocLine(" * list of size not greater than 1000");
 //        method.addJavaDocLine(" */");
         method.setName("updateBySelectiveBatch");
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<? extends" + objectName + ">"), "list"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Collection<? extends " + objectName + ">"), "collection"));
         method.setReturnType(new FullyQualifiedJavaType("void"));
 
 		/*该行代码的作用：当commentGenerator配置为false时，接口可以生成注释代码。
@@ -77,14 +77,14 @@ public class CustomerMybatisPlugin extends PluginAdapter {
         interfaze.addMethod(method);
         method = new Method();//
         method.setName("updateBatch");
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<? extends" + objectName + ">"), "list"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Collection<? extends " + objectName + ">"), "collection"));
         method.setReturnType(new FullyQualifiedJavaType("void"));
         interfaze.addMethod(method);
-        method = new Method();//
-        method.setName("insertBatch");
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.List<? extends" + objectName + ">"), "list"));
-        method.setReturnType(new FullyQualifiedJavaType("void"));
-        interfaze.addMethod(method);
+//        method = new Method();//
+//        method.setName("insertBatch");
+//        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Collection<? extends" + objectName + ">"), "collection"));
+//        method.setReturnType(new FullyQualifiedJavaType("void"));
+//        interfaze.addMethod(method);
         interfaze.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
         interfaze.addAnnotation("@Mapper");
         return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
@@ -97,12 +97,12 @@ public class CustomerMybatisPlugin extends PluginAdapter {
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
         XmlElement parentElement = document.getRootElement();
         String tableName = introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime();//数据库表名
-
+//
         parentElement.addElement(getUpdateBatchBySelectiveElement(introspectedTable, tableName));
-
+//
         parentElement.addElement(getUpdateBatchElement(introspectedTable, tableName));//批量更新
-
-        parentElement.addElement(getInsertBatchElement(introspectedTable, tableName));//批量插入
+//
+//        parentElement.addElement(getInsertBatchElement(introspectedTable, tableName));//批量插入
 
         return super.sqlMapDocumentGenerated(document, introspectedTable);
     }

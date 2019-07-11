@@ -888,11 +888,11 @@ public abstract class IntrospectedTable {
         sb.append("Key"); //$NON-NLS-1$
         setPrimaryKeyType(sb.toString());
 
-        sb.setLength(0);
-        sb.append(pakkage);
-        sb.append('.');
-        sb.append(fullyQualifiedTable.getDomainObjectName());
-        setBaseRecordType(sb.toString());
+//        sb.setLength(0);
+//        sb.append(pakkage);
+//        sb.append('.');
+//        sb.append(fullyQualifiedTable.getDomainObjectName());
+//        setBaseRecordType(sb.toString());
 
         sb.setLength(0);
         sb.append(pakkage);
@@ -913,11 +913,11 @@ public abstract class IntrospectedTable {
         String pakkage = calculateJavaModelPackage();
 
         StringBuilder sb = new StringBuilder();
-        sb.append(pakkage);
-        sb.append('.');
-        sb.append(fullyQualifiedTable.getDomainObjectName());
-        sb.append("Key"); //$NON-NLS-1$
-        setPrimaryKeyType(sb.toString());
+//        sb.append(pakkage);
+//        sb.append('.');
+//        sb.append(fullyQualifiedTable.getDomainObjectName());
+//        sb.append("Key"); //$NON-NLS-1$
+//        setPrimaryKeyType(sb.toString());
 
         sb.setLength(0);
         sb.append(pakkage);
@@ -925,19 +925,19 @@ public abstract class IntrospectedTable {
         sb.append(fullyQualifiedTable.getDomainObjectName());
         setBaseRecordType(sb.toString());
 
-        sb.setLength(0);
-        sb.append(pakkage);
-        sb.append('.');
-        sb.append(fullyQualifiedTable.getDomainObjectName());
-        sb.append("WithBLOBs"); //$NON-NLS-1$
-        setRecordWithBLOBsType(sb.toString());
-
-        sb.setLength(0);
-        sb.append(pakkage);
-        sb.append('.');
-        sb.append(fullyQualifiedTable.getDomainObjectName());
-        sb.append("Example"); //$NON-NLS-1$
-        setExampleType(sb.toString());
+//        sb.setLength(0);
+//        sb.append(pakkage);
+//        sb.append('.');
+//        sb.append(fullyQualifiedTable.getDomainObjectName());
+//        sb.append("WithBLOBs"); //$NON-NLS-1$
+//        setRecordWithBLOBsType(sb.toString());
+//
+//        sb.setLength(0);
+//        sb.append(pakkage);
+//        sb.append('.');
+//        sb.append(fullyQualifiedTable.getDomainObjectName());
+//        sb.append("Example"); //$NON-NLS-1$
+//        setExampleType(sb.toString());
     }
 
     protected String calculateSqlMapPackage() {
