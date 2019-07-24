@@ -11,6 +11,8 @@ import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,6 +25,7 @@ import java.util.List;
 public class CustomerMybatisPlugin extends PluginAdapter {
 
     private String item = "item";
+    private Logger logger = LoggerFactory.getLogger(CustomerMybatisPlugin.class);
 
     /**
      * 验证插件的配置是否正确
@@ -35,13 +38,14 @@ public class CustomerMybatisPlugin extends PluginAdapter {
     @Override
     public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
         String classAnnotation = "@ApiModel(value=\"\")";
-        if(!topLevelClass.getAnnotations().contains(classAnnotation)) {
+        if (!topLevelClass.getAnnotations().contains(classAnnotation)) {
             topLevelClass.addAnnotation(classAnnotation);
         }
-        String apiModelAnnotationPackage =  properties.getProperty("apiModelAnnotationPackage");
+        String apiModelAnnotationPackage = properties.getProperty("apiModelAnnotationPackage");
         String apiModelPropertyAnnotationPackage = properties.getProperty("apiModelPropertyAnnotationPackage");
-        if(null == apiModelAnnotationPackage) apiModelAnnotationPackage = "io.swagger.annotations.ApiModel";
-        if(null == apiModelPropertyAnnotationPackage) apiModelPropertyAnnotationPackage = "io.swagger.annotations.ApiModelProperty";
+        if (null == apiModelAnnotationPackage) apiModelAnnotationPackage = "io.swagger.annotations.ApiModel";
+        if (null == apiModelPropertyAnnotationPackage)
+            apiModelPropertyAnnotationPackage = "io.swagger.annotations.ApiModelProperty";
 
         topLevelClass.addImportedType(apiModelAnnotationPackage);
         topLevelClass.addImportedType(apiModelPropertyAnnotationPackage);
@@ -55,6 +59,11 @@ public class CustomerMybatisPlugin extends PluginAdapter {
      */
     @Override
     public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        if(introspectedTable.getPrimaryKeyColumns() == null || introspectedTable.getPrimaryKeyColumns().size() == 0){
+            logger.warn("table (" + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() + ") not exist primaryKey, not generate updateBySelectiveBatch method");
+            logger.warn("table (" + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() + ") not exist primaryKey, not generate updateBatch method");
+            return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
+        }
         String objectName = introspectedTable.getTableConfiguration().getDomainObjectName();//对象名称
         FullyQualifiedJavaType modelTypeWithoutBLOBs = JavaElementGeneratorTools.getModelTypeWithoutBLOBs(introspectedTable);
         if (objectName == null)
@@ -98,9 +107,12 @@ public class CustomerMybatisPlugin extends PluginAdapter {
         XmlElement parentElement = document.getRootElement();
         String tableName = introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime();//数据库表名
 //
-        parentElement.addElement(getUpdateBatchBySelectiveElement(introspectedTable, tableName));
-//
-        parentElement.addElement(getUpdateBatchElement(introspectedTable, tableName));//批量更新
+        XmlElement updateBatchBySelectiveElement = getUpdateBatchBySelectiveElement(introspectedTable, tableName);
+        if (updateBatchBySelectiveElement != null)
+            parentElement.addElement(updateBatchBySelectiveElement);
+        XmlElement updateBatchElement = getUpdateBatchElement(introspectedTable, tableName);
+        if (updateBatchElement != null)
+            parentElement.addElement(updateBatchElement);//批量更新
 //
 //        parentElement.addElement(getInsertBatchElement(introspectedTable, tableName));//批量插入
 
@@ -117,7 +129,10 @@ public class CustomerMybatisPlugin extends PluginAdapter {
     public XmlElement getUpdateBatchBySelectiveElement(IntrospectedTable introspectedTable, String tableName) {
         XmlElement updateBatchElement = new XmlElement("update");
         updateBatchElement.addAttribute(new Attribute("id", "updateBySelectiveBatch"));
-
+        if (introspectedTable.getPrimaryKeyColumns() == null || introspectedTable.getPrimaryKeyColumns().size() == 0) {
+            logger.warn("table (" + tableName + ") not exist primaryKey, not generate updateBySelectiveBatch sql");
+            return null;
+        }
         XmlElement foreachElement = NewForeachElement();
         XmlElement ifElement = NewIfElement(introspectedTable.getPrimaryKeyColumns());
 
@@ -178,7 +193,10 @@ public class CustomerMybatisPlugin extends PluginAdapter {
     public XmlElement getUpdateBatchElement(IntrospectedTable introspectedTable, String tableName) {
         XmlElement updateBatchElement = new XmlElement("update");
         updateBatchElement.addAttribute(new Attribute("id", "updateBatch"));
-
+        if (introspectedTable.getPrimaryKeyColumns() == null || introspectedTable.getPrimaryKeyColumns().size() == 0) {
+            logger.warn("table (" + tableName + ") not exist primaryKey, not generate updateBatch sql");
+            return null;
+        }
         XmlElement foreachElement = NewForeachElement();
         XmlElement ifElement = NewIfElement(introspectedTable.getPrimaryKeyColumns());
 
