@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class ModelBuilderPlugin extends BasePlugin {
     public static final String BUILDER_CLASS_NAME = "Builder";  // Builder 类名
-    private Map<IntrospectedTable, InnerTypeFullyQualifiedJavaType> innerClasses = new HashMap<>();
+    private Map<IntrospectedTable, InnerTypeFullyQualifiedJavaType2> innerClasses = new HashMap<>();
 
     /**
      * Model Methods 生成
@@ -101,7 +101,7 @@ public class ModelBuilderPlugin extends BasePlugin {
 
         // 具体执行顺序 http://www.mybatis.org/generator/reference/pluggingIn.html
         // 顺序为 key base withBLOBs
-        InnerTypeFullyQualifiedJavaType builderType = new InnerTypeFullyQualifiedJavaType(topLevelClass.getType().getFullyQualifiedName() + "." + BUILDER_CLASS_NAME);
+        InnerTypeFullyQualifiedJavaType2 builderType = new InnerTypeFullyQualifiedJavaType2(topLevelClass.getType().getFullyQualifiedName() + "." + BUILDER_CLASS_NAME);
         if (innerClasses.get(introspectedTable) != null) {
             innerClass.setSuperClass(innerClasses.get(introspectedTable));
             innerClasses.remove(introspectedTable);

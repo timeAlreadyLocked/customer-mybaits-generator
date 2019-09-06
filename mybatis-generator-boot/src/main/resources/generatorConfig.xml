@@ -17,9 +17,6 @@
         <plugin type="cn.lpj.mybatis.generator.ModelColumnPlugin"/>
         <plugin type="cn.lpj.mybatis.generator.BatchInsertPlugin"/>
         <plugin type="cn.lpj.mybatis.generator.ExampleEnhancedPlugin"/>
-        <plugin type="cn.lpj.mybatis.generator.ModelColumnPlugin">
-            <property name="" value=""/>
-        </plugin>
         <!--<plugin type="com.GeneratorSwagger2Doc"/>-->
         <plugin type="cn.lpj.mybatis.generator.CustomerMybatisPlugin"/>
         <!--覆盖xml文件-->
@@ -87,7 +84,7 @@
 
         </table>
 <!--        <table tableName="encrypt_key"></table>-->
-        <table tableName="env" domainObjectName="TEnv"></table>
+        <table tableName="app" domainObjectName="App"></table>
 <!--        <table tableName="user"></table>-->
 <!--        <table tableName="tb_item_desc"></table>-->
 <!--        <table tableName="tb_item_param"></table>-->
