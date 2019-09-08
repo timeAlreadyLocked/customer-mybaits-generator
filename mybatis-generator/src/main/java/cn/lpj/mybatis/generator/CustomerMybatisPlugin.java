@@ -75,10 +75,10 @@ public class CustomerMybatisPlugin extends PluginAdapter {
 //        method.addJavaDocLine(" * list of size not greater than 1000");
 //        method.addJavaDocLine(" */");
         method.setName("updateBySelectiveBatch");
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Collection<? extends " + objectName + ">"), "collection"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Collection<? extends " + objectName + ">"), "collection","@Param(\"list\")"));
         FullyQualifiedJavaType selectiveType = new FullyQualifiedJavaType(introspectedTable.getRules().calculateAllFieldsClass().getShortName() + "." + ModelColumnPlugin.ENUM_NAME);
         method.addParameter(new Parameter(selectiveType, "selective", "@Param(\"selective\")", true));
-        method.setReturnType(new FullyQualifiedJavaType("Void"));
+        method.setReturnType(new FullyQualifiedJavaType("int"));
 
 		/*该行代码的作用：当commentGenerator配置为false时，接口可以生成注释代码。
 	              没有意义，所以注释，其他新加的方法已经删除*/
@@ -88,7 +88,7 @@ public class CustomerMybatisPlugin extends PluginAdapter {
         method = new Method();//
         method.setName("updateBatch");
         method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Collection<? extends " + objectName + ">"), "collection"));
-        method.setReturnType(new FullyQualifiedJavaType("Void"));
+        method.setReturnType(new FullyQualifiedJavaType("int"));
         interfaze.addMethod(method);
 //        method = new Method();//
 //        method.setName("insertBatch");
@@ -230,6 +230,7 @@ public class CustomerMybatisPlugin extends PluginAdapter {
             IntrospectedColumn introspectedColumn = columns.get(i);
             XmlElement check = new XmlElement("if");
             check.addAttribute(new Attribute("test", "'" + introspectedColumn.getActualColumnName() + "'.toString() == column.value"));
+            check.addElement(new TextElement("${column.escapedColumnName} = "));
             check.addElement(new TextElement(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn, "item.")));
 
             foreachInsertColumnsCheck.addElement(check);
