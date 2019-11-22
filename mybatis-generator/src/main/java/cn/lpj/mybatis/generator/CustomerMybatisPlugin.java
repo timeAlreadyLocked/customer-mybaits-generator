@@ -1,6 +1,7 @@
 package cn.lpj.mybatis.generator;
 
 import com.itfsw.mybatis.generator.plugins.utils.JavaElementGeneratorTools;
+import com.itfsw.mybatis.generator.plugins.utils.XmlElementGeneratorTools;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -79,17 +80,27 @@ public class CustomerMybatisPlugin extends PluginAdapter {
         FullyQualifiedJavaType selectiveType = new FullyQualifiedJavaType(introspectedTable.getRules().calculateAllFieldsClass().getShortName() + "." + ModelColumnPlugin.ENUM_NAME);
         method.addParameter(new Parameter(selectiveType, "selective", "@Param(\"selective\")", true));
         method.setReturnType(new FullyQualifiedJavaType("int"));
-
+        interfaze.addMethod(method);
 		/*该行代码的作用：当commentGenerator配置为false时，接口可以生成注释代码。
 	              没有意义，所以注释，其他新加的方法已经删除*/
         //context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
 
-        interfaze.addMethod(method);
+
         method = new Method();//
         method.setName("updateBatch");
         method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Collection<? extends " + objectName + ">"), "collection"));
         method.setReturnType(new FullyQualifiedJavaType("int"));
         interfaze.addMethod(method);
+
+
+        method = new Method();//
+        method.setName("updateNullByExampleSelective");
+        FullyQualifiedJavaType selectiveType2 = new FullyQualifiedJavaType(introspectedTable.getRules().calculateAllFieldsClass().getShortName() + "." + ModelColumnPlugin.ENUM_NAME);
+        method.addParameter(new Parameter(new FullyQualifiedJavaType(introspectedTable.getExampleType()),"example","@Param(\"example\")"));
+        method.addParameter(new Parameter(selectiveType2, "columns", "@Param(\"columns\")", true));
+        method.setReturnType(new FullyQualifiedJavaType("int"));
+        interfaze.addMethod(method);
+
 //        method = new Method();//
 //        method.setName("insertBatch");
 //        method.addParameter(new Parameter(new FullyQualifiedJavaType("java.util.Collection<? extends" + objectName + ">"), "collection"));
@@ -112,9 +123,51 @@ public class CustomerMybatisPlugin extends PluginAdapter {
 //
         parentElement.addElement(getUpdateBatchBySelectiveElement(introspectedTable, tableName));
         parentElement.addElement(getUpdateBatchElement(introspectedTable, tableName));//批量更新
+
+        parentElement.addElement(getUpdateNullByExampleSelective(introspectedTable,tableName)); //更新成null根据example
 //
 //        parentElement.addElement(getInsertBatchElement(introspectedTable, tableName));//批量插入
         return super.sqlMapDocumentGenerated(document, introspectedTable);
+    }
+
+    private Element getUpdateNullByExampleSelective(IntrospectedTable introspectedTable, String tableName) {
+        XmlElement updateBatchElement = new XmlElement("update");
+        updateBatchElement.addAttribute(new Attribute("id", "updateNullByExampleSelective"));
+        // 参数类型
+        updateBatchElement.addAttribute(new Attribute("parameterType", "map"));
+
+//        XmlElement ifElement = NewIfElement(introspectedTable.getPrimaryKeyColumns());
+
+		/*该行代码的作用：当commentGenerator配置为false时，sql可以生成注释代码。
+		     没有意义，所以注释，其他新加的方法已经删除*/
+        //context.getCommentGenerator().addComment(updateBatchElement);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("update ").append(tableName);
+        updateBatchElement.addElement(new TextElement(sb.toString()));
+//        ifElement.addElement(new TextElement(sb.toString()));
+
+        XmlElement dynamicElement = new XmlElement("set");
+        updateBatchElement.addElement(dynamicElement);
+        XmlElement foreachInsertColumnsCheck = new XmlElement("foreach");
+        foreachInsertColumnsCheck.addAttribute(new Attribute("collection", "columns"));
+        foreachInsertColumnsCheck.addAttribute(new Attribute("item", "column"));
+        foreachInsertColumnsCheck.addAttribute(new Attribute("separator", ","));
+        // 所有表字段
+//        List<IntrospectedColumn> columns = ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns());
+//        List<IntrospectedColumn> columns1 = ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns());
+//        for (int i = 0; i < columns1.size(); i++) {
+//            IntrospectedColumn introspectedColumn = columns.get(i);
+//            XmlElement check = new XmlElement("if");
+//            check.addAttribute(new Attribute("test", "'" + introspectedColumn.getActualColumnName() + "'.toString() == column.value"));
+//            check.addElement(new TextElement("${column.escapedColumnName} is null"));
+////            check.addElement(new TextElement(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn, "item.")));
+//            foreachInsertColumnsCheck.addElement(check);
+//        }
+        foreachInsertColumnsCheck.addElement(new TextElement("${column.escapedColumnName} = null"));
+        dynamicElement.addElement(foreachInsertColumnsCheck);
+        updateBatchElement.addElement(XmlElementGeneratorTools.getUpdateByExampleIncludeElement(introspectedTable));
+        return updateBatchElement;
     }
 
     /**
